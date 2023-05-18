@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  mongo:
+    image: mwitterc/covid-db:v2
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: covidb
+      MONGO_INITDB_ROOT_PASSWORD: covidb
+    ports:
+      - "27017:27017"
+    volumes:
+      - /Volumes:/data/db

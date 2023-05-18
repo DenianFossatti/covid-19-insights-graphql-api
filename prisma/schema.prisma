@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URI")
+}
+
+model covid_2022 {
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  bairro                 String
+  cod_ibge               String
+  cod_regiao_covid       String
+  condicoes              String?
+  criterio               String
+  data_confirmacao       String
+  data_evolucao          String?
+  data_evolucao_estimada String?
+  data_inclusao          String
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  data_inclusao_obito    Json?
+  data_sintomas          String
+  dispneia               Boolean?
+  evolucao               String
+  faixa_etaria           String
+  febre                  Boolean
+  garganta               Boolean
+  gestante               Boolean
+  hospitalizado          Boolean
+  idade                  String
+  municipio              String
+  outros_sintomas        Boolean
+  profissional_saude     Boolean?
+  raca_cor               String
+  regiao_covid           String
+  sexo                   String
+  srag                   Boolean
+  tosse                  Boolean
+  uti                    Boolean
+}

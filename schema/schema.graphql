@@ -1,0 +1,354 @@
+"""The root of all queries."""
+type Query {
+  """The ID of an object"""
+  id: ID!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Fetches objects given their IDs"""
+  nodes(
+    """The IDs of objects"""
+    ids: [ID!]!
+  ): [Node]!
+
+  """Connection to all orders."""
+  orders(after: String, first: Int, before: String, last: Int, filters: OrderFilters): OrderConnection!
+
+  """Connection to all stores."""
+  stores(after: String, first: Int, before: String, last: Int, filters: StoreFilters): StoreConnection!
+
+  """Connection to all products."""
+  products(after: String, first: Int, before: String, last: Int, filters: ProductFilters): ProductConnection!
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""A connection to a list of items."""
+type OrderConnection implements Connection {
+  """Number of items in this connection."""
+  count: Int
+
+  """
+  A count of the total number of objects in this connection, ignoring pagination.
+  This allows a client to fetch the first five objects by passing "5" as the
+  argument to "first", then fetch the total count so it could display "5 of 83",
+  for example.
+  """
+  totalCount: Int
+
+  """Offset from start."""
+  startCursorOffset: Int!
+
+  """Offset till end."""
+  endCursorOffset: Int!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [OrderEdge]!
+}
+
+"""A connection to a list of items."""
+interface Connection {
+  """Number of items in this connection."""
+  count: Int
+
+  """
+  A count of the total number of objects in this connection, ignoring pagination.
+  This allows a client to fetch the first five objects by passing "5" as the
+  argument to "first", then fetch the total count so it could display "5 of 83",
+  for example.
+  """
+  totalCount: Int
+
+  """Offset from start."""
+  startCursorOffset: Int!
+
+  """Offset till end."""
+  endCursorOffset: Int!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+"""An edge in a connection."""
+type OrderEdge {
+  """The item at the end of the edge."""
+  node: Order
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+"""Order data"""
+type Order implements Node {
+  """The ID of an object"""
+  id: ID!
+
+  """The user id that made this order"""
+  userId: String
+
+  """The total amount of product's prices. ex: 1000 (R$ 10,00)"""
+  total: Int
+
+  """The products that this order has"""
+  products: [OrderProducts]!
+
+  """The store that this order was made"""
+  store: Store
+
+  """The order status. ex: pending, delivered, canceled"""
+  status: OrderStatus
+  createdAt: String
+  updatedAt: String
+}
+
+"""The products that this order has"""
+type OrderProducts {
+  """The ID of an object"""
+  id: ID!
+
+  """The product name. ex: Hambúrguer"""
+  name: String
+
+  """The product order quantity. ex: 10"""
+  quantity: Int
+
+  """The product price. ex: 1000 (R$ 10,00)"""
+  price: Int
+}
+
+"""Store data"""
+type Store implements Node {
+  """The ID of an object"""
+  id: ID!
+
+  """The store name. ex: Hamburguer"""
+  name: String
+  createdAt: String
+  updatedAt: String
+}
+
+enum OrderStatus {
+  CANCELLED
+  DELIVERED
+  PENDING
+  ACCEPTED
+  SENT
+}
+
+"""Used to filter categories"""
+input OrderFilters {
+  OR: [OrderFilters]
+  AND: [OrderFilters]
+
+  """Order orders by StatusDateOrderingInputType."""
+  orderBy: [StatusDateOrdering!]
+}
+
+"""Used to order by createdAt or updatedAt."""
+input StatusDateOrdering {
+  """the field used to sort. Ex: CREATED_AT."""
+  field: StatusDateSortEnumType!
+
+  """the direction used to sort. Ex: ASC."""
+  direction: DirectionEnum!
+}
+
+enum StatusDateSortEnumType {
+  """The creation date."""
+  CREATED_AT
+
+  """The last date that the document was updated"""
+  UPDATED_AT
+}
+
+enum DirectionEnum {
+  ASC
+  DESC
+}
+
+"""A connection to a list of items."""
+type StoreConnection implements Connection {
+  """Number of items in this connection."""
+  count: Int
+
+  """
+  A count of the total number of objects in this connection, ignoring pagination.
+  This allows a client to fetch the first five objects by passing "5" as the
+  argument to "first", then fetch the total count so it could display "5 of 83",
+  for example.
+  """
+  totalCount: Int
+
+  """Offset from start."""
+  startCursorOffset: Int!
+
+  """Offset till end."""
+  endCursorOffset: Int!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [StoreEdge]!
+}
+
+"""An edge in a connection."""
+type StoreEdge {
+  """The item at the end of the edge."""
+  node: Store
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+"""Used to filter categories"""
+input StoreFilters {
+  OR: [StoreFilters]
+  AND: [StoreFilters]
+
+  """Order stores by StatusDateOrderingInputType."""
+  orderBy: [StatusDateOrdering!]
+}
+
+"""A connection to a list of items."""
+type ProductConnection implements Connection {
+  """Number of items in this connection."""
+  count: Int
+
+  """
+  A count of the total number of objects in this connection, ignoring pagination.
+  This allows a client to fetch the first five objects by passing "5" as the
+  argument to "first", then fetch the total count so it could display "5 of 83",
+  for example.
+  """
+  totalCount: Int
+
+  """Offset from start."""
+  startCursorOffset: Int!
+
+  """Offset till end."""
+  endCursorOffset: Int!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProductEdge]!
+}
+
+"""An edge in a connection."""
+type ProductEdge {
+  """The item at the end of the edge."""
+  node: Product
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+"""Product data"""
+type Product implements Node {
+  """The ID of an object"""
+  id: ID!
+
+  """The product name. ex: Hamburguer"""
+  name: String
+
+  """The product key. ex: meat"""
+  quantity: Int
+
+  """The product price. ex: 1000 (R$ 10,00)"""
+  price: Int
+
+  """The store that this product belongs to"""
+  store: Store
+  createdAt: String
+  updatedAt: String
+}
+
+"""Used to filter categories"""
+input ProductFilters {
+  OR: [ProductFilters]
+  AND: [ProductFilters]
+
+  """Order products by StatusDateOrderingInputType."""
+  orderBy: [StatusDateOrdering!]
+}
+
+type Mutation {
+  CreateOrder(input: CreateOrderInput!): CreateOrderPayload
+  UpdateOrderStatus(input: UpdateOrderStatusInput!): UpdateOrderStatusPayload
+}
+
+type CreateOrderPayload {
+  orderEdge: OrderEdge
+
+  """Default success field resolver."""
+  success: String
+
+  """Default error field resolver."""
+  error: String
+  clientMutationId: String
+}
+
+input CreateOrderInput {
+  """The global store id for the order"""
+  storeId: String
+
+  """The products to make the order"""
+  products: [OrderProduct]!
+  clientMutationId: String
+}
+
+input OrderProduct {
+  """The global product id"""
+  id: ID!
+
+  """The quantity of the product"""
+  quantity: Int!
+}
+
+type UpdateOrderStatusPayload {
+  orderEdge: OrderEdge
+
+  """Default success field resolver."""
+  success: String
+
+  """Default error field resolver."""
+  error: String
+  clientMutationId: String
+}
+
+input UpdateOrderStatusInput {
+  """The global order id"""
+  orderId: String!
+
+  """The new status for the order"""
+  status: OrderStatus
+  clientMutationId: String
+}
