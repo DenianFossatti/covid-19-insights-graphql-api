@@ -148,3 +148,5 @@ buck-out/
 /ios/Pods/
 
 .webpackx
+
+/temp

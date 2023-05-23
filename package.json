@@ -10,11 +10,13 @@
     "lint:fix": "eslint --fix --ext .js,.ts,.tsx .",
     "prepare": "husky install",
     "prettier": "prettier",
+    "prestart": "yarn prisma generate",
     "start": "yarn w webpack.dev.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "update-schema": "node webpackx ./scripts/updateSchema.ts",
-    "w": "webpack --progress --config"
+    "w": "webpack --progress --config",
+    "docker:restart": "rm -rf temp && docker-compose down && docker rmi -f $(docker images -aq); docker-compose up"
   },
   "dependencies": {
     "@koa/cors": "^4.0.0",

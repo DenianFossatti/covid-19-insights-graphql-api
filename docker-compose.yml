@@ -1,12 +1,51 @@
 version: '3'
 
 services:
-  mongo:
-    image: mwitterc/covid-db:v2
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: covidb
-      MONGO_INITDB_ROOT_PASSWORD: covidb
+  server:
+    container_name: server
+    restart: always
+    build:
+      context: .
     ports:
-      - "27017:27017"
+      - 5001:5001
+    depends_on:
+      db_seed:
+        condition: service_completed_successfully
+      mongodb:
+        condition: service_healthy
     volumes:
-      - /Volumes:/data/db
+      - ./:/usr/src/app
+      - nodemodules:/usr/src/app/node_modules
+    networks:
+      - node-mongo
+  mongodb:
+    container_name: mongodb
+    healthcheck:
+      test: mongosh --eval 'db.runCommand("ping").ok' --quiet
+      interval: 5s
+    image: mongo:6.0.5
+    restart: always
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    volumes:
+      - ./temp/mongodata:/data/db
+    networks:
+      - node-mongo
+  db_seed:
+    restart: on-failure
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: ./seed/Dockerfile
+      args:
+        DB_IMAGE: mongo:6.0.5
+    networks:
+      - node-mongo
+networks:
+  node-mongo:
+volumes:
+  nodemodules: {}

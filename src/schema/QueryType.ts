@@ -1,14 +1,14 @@
 import { GraphQLObjectType } from 'graphql';
 
-import { countPatients } from '../modules/patients/queries';
-import { countPatientsSymptoms } from '../modules/symptoms/queries';
+import * as countPatientsQueries from '../modules/patients/queries';
+import * as countPatientsSymptomsQueries from '../modules/symptoms/queries';
 
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   description: 'The root of all queries.',
   fields: () => ({
-    countPatients,
-    countPatientsSymptoms,
+    ...countPatientsQueries,
+    ...countPatientsSymptomsQueries,
   }),
 });
 

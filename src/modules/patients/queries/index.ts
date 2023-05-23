@@ -1,1 +1,6 @@
-export { countPatients } from './CountPatients';
+export {
+  countPatients,
+  countPatientsByAge,
+  countPatientsByRecoveryStatus,
+  countPatientsByDiagnosisCriteria,
+} from './CountPatients';
