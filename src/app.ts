@@ -1,87 +1,111 @@
 /* eslint-disable no-console */
-
-import cors from '@koa/cors';
-import Router from '@koa/router';
+import cors from '@fastify/cors';
+import { useHive } from '@graphql-hive/client';
 import { PrismaClient } from '@prisma/client';
-import { GraphQLError } from 'graphql';
-import { koaPlayground } from 'graphql-playground-middleware';
-import Koa from 'koa';
-import bodyParser from 'koa-bodyparser';
-import { graphqlHTTP } from 'koa-graphql';
-import logger from 'koa-logger';
+import fastify, { FastifyReply, FastifyRequest } from 'fastify';
+import { createYoga } from 'graphql-yoga';
 
-import { NODE_ENV, isProduction } from './config';
-
+import { HIVE_API_KEY, isProduction } from './config';
 import schema from './schema/schema';
-import { CustomGraphQLContext } from './types';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: [
+    { level: 'warn', emit: 'event' },
+    { level: 'info', emit: 'event' },
+    { level: 'error', emit: 'event' },
+    { level: 'query', emit: 'event' },
+  ],
+});
 
-const app = new Koa<any, CustomGraphQLContext>();
-const router = new Router<any, CustomGraphQLContext>();
+prisma.$use(async (params, next) => {
+  // middleware to log query execution time
+  const before = Date.now();
 
-app.use(bodyParser());
-app.use(cors());
+  const result = await next(params);
 
-app.on('error', (error) => {
+  const after = Date.now();
+
+  console.log(`Query ${params.model}.${params.action} took ${after - before}ms`);
+
+  return result;
+});
+
+prisma.$on('warn', (e) => {
+  console.log(e);
+});
+
+prisma.$on('info', (e) => {
+  console.log(e);
+});
+
+prisma.$on('error', (e) => {
+  console.log(e);
+});
+
+// prisma.$on('query', (e) => {
+//   console.log(e);
+// });
+
+const app = fastify({
+  logger: true,
+});
+
+app.register(cors, {
+  origin: '*',
+  logLevel: 'info',
+});
+
+const yoga = createYoga<{
+  req: FastifyRequest;
+  reply: FastifyReply;
+}>({
+  schema,
+  context: {
+    prisma,
+  },
+  plugins: [
+    useHive({
+      enabled: true, // Enable/Disable Hive Client
+      debug: false,
+      token: HIVE_API_KEY,
+      reporting: {
+        author: 'Developer',
+        commit: '1',
+      },
+      usage: true,
+    }),
+  ],
+  graphiql: !isProduction,
+  logging: {
+    debug: (...args) => args.forEach((arg) => app.log.debug(arg)),
+    info: (...args) => args.forEach((arg) => app.log.info(arg)),
+    warn: (...args) => args.forEach((arg) => app.log.warn(arg)),
+    error: (...args) => args.forEach((arg) => app.log.error(arg)),
+  },
+});
+
+app.setErrorHandler((error, _request, _reply) => {
   console.error('Error while answering request', { error });
 });
 
-if (isProduction) {
-  app.proxy = true;
-}
+app.route({
+  url: yoga.graphqlEndpoint,
+  method: ['GET', 'POST', 'OPTIONS'],
+  handler: async (req, reply) => {
+    const response = await yoga.handleNodeRequest(req, {
+      req,
+      reply,
+    });
+    response.headers.forEach((value, key) => {
+      reply.header(key, value);
+    });
 
-if (NODE_ENV !== 'test') {
-  app.use(logger());
-}
+    reply.status(response.status);
 
-if (!isProduction) {
-  router.all('/playground', koaPlayground({ endpoint: '/graphql' }));
-}
+    reply.send(response.body);
 
-const graphqlServer = graphqlHTTP((_request, _response, ctx) => {
-  return {
-    graphiql: !isProduction,
-    schema,
-    context: {
-      prisma,
-    },
-    customFormatErrorFn: (error: GraphQLError) => {
-      if (error.name && error.name === 'BadRequestError') {
-        ctx.status = 400;
-        ctx.body = 'Bad Request';
-        return {
-          message: 'Bad Request',
-        };
-      }
-
-      if (error.path || error.name !== 'GraphQLError') {
-        console.error(error);
-      } else {
-        console.log(`GraphQLWrongQuery: ${error.message}`);
-      }
-
-      console.error('GraphQL Error', { error });
-
-      if (!isProduction) {
-        return {
-          message: error.message,
-          locations: error.locations,
-          stack: error.stack,
-        };
-      } else {
-        ctx.status = 400;
-        ctx.body = 'Bad Request';
-        return {
-          message: 'Bad Request',
-        };
-      }
-    },
-  };
+    return reply;
+  },
 });
 
-router.all('/graphql', graphqlServer);
-
-app.use(router.routes()).use(router.allowedMethods());
-
-export default app;
+export { app };

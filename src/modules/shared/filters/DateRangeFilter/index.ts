@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { GraphQLInputObjectType } from 'graphql';
 
 import { GraphQLDateTime } from 'graphql-scalars';
@@ -17,13 +18,13 @@ export const DateRangeInputType: GraphQLInputObjectType = new GraphQLInputObject
   }),
 });
 
-export const buildPrismaRangeWhere = (args: CustomGraphQLArgs) =>
+export const buildPrismaRangeWhere = (args: CustomGraphQLArgs, raw: boolean = false) =>
   args?.filters?.endDate && args.filters.startDate
     ? {
         where: {
           data_inclusao: {
-            gte: args?.filters?.startDate,
-            lte: args?.filters?.endDate,
+            [raw ? '$gte' : 'gte']: args?.filters?.startDate,
+            [raw ? '$lte' : 'lte']: args?.filters?.endDate,
           },
         },
       }

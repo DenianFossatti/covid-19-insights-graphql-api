@@ -5,7 +5,7 @@ import { DateRangeInputType, buildPrismaRangeWhere } from '../../shared/filters/
 
 export const countPatients: GraphQLFieldConfig<any, CustomGraphQLContext, CustomGraphQLArgs> = {
   type: new GraphQLNonNull(GraphQLInt),
-  description: 'Counter of patients.',
+  description: 'Counter of infected patients.',
   args: {
     filters: {
       type: DateRangeInputType,
