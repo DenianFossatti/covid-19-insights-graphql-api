@@ -14,7 +14,7 @@ export const averageInfectedPatientAge: GraphQLFieldConfig<any, CustomGraphQLCon
           resolve: async (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) => {
             const query = await ctx.prisma.covid_2022.aggregateRaw({
               pipeline: [
-                { $match: buildPrismaRangeWhere(root.args, true)?.where },
+                ...(root.args.filters ? [{ $match: buildPrismaRangeWhere(root.args, true)?.where }] : []),
                 {
                   $group: {
                     _id: null,
