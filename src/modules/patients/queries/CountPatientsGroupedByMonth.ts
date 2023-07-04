@@ -1,13 +1,13 @@
 import { GraphQLFieldConfig, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 
 import { CustomGraphQLArgs, CustomGraphQLContext } from '../../../types';
-import { DateRangeInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
+import { QueryFilterInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
 
 export const countPatientsGroupedByMonth: GraphQLFieldConfig<any, CustomGraphQLContext, CustomGraphQLArgs> = {
   description: 'Counter of patients infected grouped by month.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
   type: new GraphQLList(

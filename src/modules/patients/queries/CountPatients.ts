@@ -1,14 +1,14 @@
 import { GraphQLFieldConfig, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import { CustomGraphQLArgs, CustomGraphQLContext } from '../../../types';
-import { DateRangeInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
+import { QueryFilterInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
 
 export const countPatients: GraphQLFieldConfig<any, CustomGraphQLContext, CustomGraphQLArgs> = {
   type: new GraphQLNonNull(GraphQLInt),
   description: 'Counter of infected patients.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
@@ -36,7 +36,7 @@ export const countPatientsByAge: GraphQLFieldConfig<any, CustomGraphQLContext, C
   description: 'Counter of patients by age.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
@@ -73,7 +73,7 @@ export const countPatientsByRecoveryStatus: GraphQLFieldConfig<any, CustomGraphQ
   description: 'Counter of patients by recovery status.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
@@ -110,7 +110,7 @@ export const countPatientsByDiagnosisCriteria: GraphQLFieldConfig<any, CustomGra
   description: 'Counter of patients by diagnosis criteria.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>

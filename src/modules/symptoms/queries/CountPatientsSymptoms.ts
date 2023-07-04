@@ -1,14 +1,14 @@
 import { GraphQLFieldConfig, GraphQLInt, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 
 import { CustomGraphQLArgs, CustomGraphQLContext } from '../../../types';
-import { DateRangeInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
+import { QueryFilterInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
 
 export const countPatientsSymptoms: GraphQLFieldConfig<any, CustomGraphQLContext, CustomGraphQLArgs> = {
   description: 'Counter of patients symptoms.',
   resolve: async (_, args) => ({ args }), // pass args to fields resolvers
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
   type: new GraphQLNonNull(

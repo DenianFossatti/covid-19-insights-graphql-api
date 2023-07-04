@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import { CustomGraphQLArgs, CustomGraphQLContext } from '../../../types';
-import { DateRangeInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
+import { QueryFilterInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
 
 export const countDeadPatients: GraphQLFieldConfig<any, CustomGraphQLContext, CustomGraphQLArgs> = {
   resolve: async (_, args) => ({ args }), // pass args to fields resolvers
@@ -27,7 +27,7 @@ export const countDeadPatients: GraphQLFieldConfig<any, CustomGraphQLContext, Cu
   description: 'Counter of patients by notification date that died at some point later.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
 };
@@ -69,7 +69,7 @@ export const countDeadPatientsGroupedByCity: GraphQLFieldConfig<any, CustomGraph
   description: 'Counter of patients by notification date that died at some point later grouped by city.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
 };
@@ -146,7 +146,7 @@ export const countDeadPatientsGroupedByMonth: GraphQLFieldConfig<any, CustomGrap
   description: 'Counter of patients by notification date that died at some point later grouped by month.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
 };

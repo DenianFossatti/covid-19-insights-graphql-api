@@ -8,5 +8,6 @@ export interface CustomGraphQLArgs {
   filters?: {
     startDate?: string;
     endDate?: string;
+    cityCode?: string;
   };
 }

@@ -1,5 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 
+import * as citiesQueries from '../modules/cities/queries';
 import * as countPatientsQueries from '../modules/patients/queries';
 import * as countPatientsSymptomsQueries from '../modules/symptoms/queries';
 
@@ -9,6 +10,7 @@ const QueryType = new GraphQLObjectType({
   fields: () => ({
     ...countPatientsQueries,
     ...countPatientsSymptomsQueries,
+    ...citiesQueries,
   }),
 });
 

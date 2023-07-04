@@ -7,6 +7,12 @@ datasource db {
   url      = env("MONGO_URI")
 }
 
+model cities {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  cod_ibge String
+  nome     String
+}
+
 model covid_2022 {
   id                     String   @id @default(auto()) @map("_id") @db.ObjectId
   bairro                 String
@@ -18,10 +24,9 @@ model covid_2022 {
   data_evolucao          String?
   data_evolucao_estimada String?
   data_inclusao          String
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  data_inclusao_obito    Json?
+  data_inclusao_obito    String?
   data_sintomas          String
-  dispneia               Boolean?
+  dispneia               Boolean
   evolucao               String
   faixa_etaria           String
   febre                  Boolean

@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 
 import { CustomGraphQLArgs, CustomGraphQLContext } from '../../../types';
-import { DateRangeInputType } from '../../shared/filters/DateRangeFilter';
+import { QueryFilterInputType } from '../../shared/filters/DateRangeFilter';
 import { buildAggregateRaw } from '../../shared/prisma/buildAggregateRaw';
 
 export const averageInfectedPatientAge: GraphQLFieldConfig<any, CustomGraphQLContext, CustomGraphQLArgs> = {
@@ -75,7 +75,7 @@ export const averageInfectedPatientAge: GraphQLFieldConfig<any, CustomGraphQLCon
   description: 'Average age of patients by notification date that got infected.',
   args: {
     filters: {
-      type: DateRangeInputType,
+      type: QueryFilterInputType,
     },
   },
 };
