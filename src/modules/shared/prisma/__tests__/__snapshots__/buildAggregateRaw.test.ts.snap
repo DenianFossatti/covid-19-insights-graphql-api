@@ -1,0 +1,153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildAggregateRaw should build aggregateRaw for avg 1`] = `
+{
+  "pipeline": [
+    {
+      "$match": {
+        "data_inclusao": {
+          "$gte": "2022-10-27T03:00:00.000Z",
+          "$lte": "2022-10-27T03:00:00.000Z",
+        },
+      },
+    },
+    {
+      "$group": {
+        "_id": null,
+        "field": {
+          "$avg": {
+            "$toInt": "$idade",
+          },
+        },
+      },
+    },
+    {
+      "$project": {
+        "_id": 0,
+        "idade": {
+          "$round": [
+            "$field",
+          ],
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`buildAggregateRaw should build aggregateRaw for countByMonth 1`] = `
+{
+  "pipeline": [
+    {
+      "$match": {
+        "data_inclusao": {
+          "$gte": "2022-10-27T03:00:00.000Z",
+          "$lte": "2022-10-27T03:00:00.000Z",
+        },
+      },
+    },
+    {
+      "$addFields": {
+        "data_inclusao": {
+          "$toDate": "$data_inclusao",
+        },
+      },
+    },
+    {
+      "$group": {
+        "_id": {
+          "month": {
+            "$month": "$data_inclusao",
+          },
+          "year": {
+            "$year": "$data_inclusao",
+          },
+        },
+        "field": {
+          "$avg": {
+            "$toInt": "$idade",
+          },
+        },
+      },
+    },
+    {
+      "$project": {
+        "_id": 0,
+        "idade": {
+          "$round": [
+            "$field",
+          ],
+        },
+        "month": "$_id.month",
+        "year": "$_id.year",
+      },
+    },
+    {
+      "$sort": {
+        "month": 1,
+        "year": 1,
+      },
+    },
+  ],
+}
+`;
+
+exports[`buildAggregateRaw should build aggregateRaw for countByMonth and match options 1`] = `
+{
+  "pipeline": [
+    {
+      "$match": {
+        "data_inclusao": {
+          "$gte": "2022-10-27T03:00:00.000Z",
+          "$lte": "2022-10-27T03:00:00.000Z",
+        },
+        "data_inclusao_obito": {
+          "$ne": null,
+        },
+      },
+    },
+    {
+      "$addFields": {
+        "data_inclusao": {
+          "$toDate": "$data_inclusao",
+        },
+      },
+    },
+    {
+      "$group": {
+        "_id": {
+          "month": {
+            "$month": "$data_inclusao",
+          },
+          "year": {
+            "$year": "$data_inclusao",
+          },
+        },
+        "field": {
+          "$avg": {
+            "$toInt": "$idade",
+          },
+        },
+      },
+    },
+    {
+      "$project": {
+        "_id": 0,
+        "idade": {
+          "$round": [
+            "$field",
+          ],
+        },
+        "month": "$_id.month",
+        "year": "$_id.year",
+      },
+    },
+    {
+      "$sort": {
+        "month": 1,
+        "year": 1,
+      },
+    },
+  ],
+}
+`;

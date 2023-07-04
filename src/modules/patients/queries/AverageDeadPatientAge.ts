@@ -1,7 +1,8 @@
 import { GraphQLFieldConfig, GraphQLInt, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 
 import { CustomGraphQLArgs, CustomGraphQLContext } from '../../../types';
-import { DateRangeInputType, buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
+import { DateRangeInputType } from '../../shared/filters/DateRangeFilter';
+import { buildAggregateRaw } from '../../shared/prisma/buildAggregateRaw';
 
 export const averageDeadPatientAge: GraphQLFieldConfig<any, CustomGraphQLContext, CustomGraphQLArgs> = {
   resolve: async (_, args) => ({ args }), // pass args to fields resolvers
@@ -12,36 +13,24 @@ export const averageDeadPatientAge: GraphQLFieldConfig<any, CustomGraphQLContext
         avg: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: async (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) => {
-            const query = await ctx.prisma.covid_2022.aggregateRaw({
-              pipeline: [
-                {
-                  $match: {
-                    ...buildPrismaRangeWhere(root.args, true)?.where,
-                    data_inclusao_obito: { $ne: null },
-                  },
+            const query = await ctx.prisma.covid_2022.aggregateRaw(
+              buildAggregateRaw({
+                args: root.args,
+                aggregationType: 'avg',
+                groupBy: 'idade',
+                match: {
+                  data_inclusao_obito: { $ne: null },
                 },
-                {
-                  $group: {
-                    _id: null,
-                    avgAge: { $avg: { $toInt: '$idade' } },
-                  },
-                },
-                {
-                  $project: {
-                    _id: 0,
-                    avgAge: { $round: ['$avgAge'] },
-                  },
-                },
-              ],
-            });
+              }),
+            );
 
             const result = query[0];
 
-            if (!result || typeof result !== 'object' || Array.isArray(result) || !result.avgAge) {
+            if (!result || typeof result !== 'object' || Array.isArray(result) || !result.idade) {
               return 0;
             }
 
-            return result.avgAge;
+            return result.idade;
           },
         },
       },

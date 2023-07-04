@@ -2,11 +2,8 @@ const pack = require('./package');
 
 module.exports = {
   displayName: pack.name,
-  name: pack.name,
-  testEnvironment: '<rootDir>/src/test/mongodb',
   testPathIgnorePatterns: ['/node_modules/'],
   coverageReporters: ['lcov', 'html'],
-  globalSetup: '<rootDir>/src/test/setup.js',
   resetModules: false,
   reporters: ['default'],
   transform: {
