@@ -12,7 +12,7 @@ export const countDeadPatients: GraphQLFieldConfig<any, CustomGraphQLContext, Cu
         count: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: async (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) =>
-            await ctx.prisma.covid_2022.count({
+            await ctx.prisma.patients.count({
               where: {
                 ...buildPrismaRangeWhere(root.args)?.where,
                 data_inclusao_obito: {
@@ -50,7 +50,7 @@ export const countDeadPatientsGroupedByCity: GraphQLFieldConfig<any, CustomGraph
   ),
   resolve: async (_root, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
     (
-      await ctx.prisma.covid_2022.groupBy({
+      await ctx.prisma.patients.groupBy({
         by: ['municipio'],
         _count: {
           _all: true,
@@ -94,17 +94,12 @@ export const countDeadPatientsGroupedByMonth: GraphQLFieldConfig<any, CustomGrap
     ),
   ),
   resolve: async (_root, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) => {
-    const query = await ctx.prisma.covid_2022.aggregateRaw({
+    const query = await ctx.prisma.patients.aggregateRaw({
       pipeline: [
         {
           $match: {
             ...buildPrismaRangeWhere(args, true)?.where,
             data_inclusao_obito: { $ne: null },
-          },
-        },
-        {
-          $addFields: {
-            data_inclusao: { $toDate: '$data_inclusao' },
           },
         },
         {

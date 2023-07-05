@@ -42,9 +42,9 @@ prisma.$on('error', (e) => {
   console.log(e);
 });
 
-// prisma.$on('query', (e) => {
-//   console.log(e);
-// });
+prisma.$on('query', (e) => {
+  console.log(`QUERY: ${e.query}`);
+});
 
 const app = fastify({
   logger: true,

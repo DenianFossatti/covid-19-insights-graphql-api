@@ -17,5 +17,11 @@ COPY ./seed/cities.json /srv/tmp/import
 RUN unzip out.json.zip
 
 CMD mongosh covid-insights-dev --host mongodb --eval 'db.dropDatabase()' && \ 
-    mongoimport --host mongodb --db covid-insights-dev --collection covid_2022 --file ./out.json --jsonArray && \
-    mongoimport --host mongodb --db covid-insights-dev --collection cities --file ./cities.json --jsonArray
+    mongoimport --host mongodb --db covid-insights-dev --collection patients --file ./out.json --jsonArray && \
+    mongoimport --host mongodb --db covid-insights-dev --collection cities --file ./cities.json --jsonArray && \
+    mongosh covid-insights-dev --host mongodb --eval 'db.patients.createIndex({cod_ibge: -1})' && \ 
+    mongosh covid-insights-dev --host mongodb --eval 'db.patients.createIndex({data_inclusao: -1})' && \ 
+    mongosh covid-insights-dev --host mongodb --eval 'db.patients.createIndex({data_inclusao: 1})' && \ 
+    mongosh covid-insights-dev --host mongodb --eval 'db.patients.createIndex({data_inclusao: 1, data_inclusao_obito: 1})' && \ 
+    mongosh covid-insights-dev --host mongodb --eval 'db.patients.createIndex({data_inclusao: 1, data_inclusao_obito: 1, cod_ibge: -1})' && \ 
+    mongosh covid-insights-dev --host mongodb --eval 'db.patients.createIndex({data_inclusao: -1, data_inclusao_obito: 1, cod_ibge: -1})'

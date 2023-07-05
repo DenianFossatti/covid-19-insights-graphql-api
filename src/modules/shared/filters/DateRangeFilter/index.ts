@@ -29,8 +29,16 @@ export const buildPrismaRangeWhere = (args: CustomGraphQLArgs, raw: boolean = fa
           ...(args?.filters?.endDate && args.filters.startDate
             ? {
                 data_inclusao: {
-                  [raw ? '$gte' : 'gte']: args?.filters?.startDate,
-                  [raw ? '$lte' : 'lte']: args?.filters?.endDate,
+                  [raw ? '$gte' : 'gte']: raw
+                    ? {
+                        $date: args?.filters?.startDate,
+                      }
+                    : new Date(args?.filters?.startDate),
+                  [raw ? '$lte' : 'lte']: raw
+                    ? {
+                        $date: args?.filters?.endDate,
+                      }
+                    : new Date(args?.filters?.endDate),
                 },
               }
             : {}),

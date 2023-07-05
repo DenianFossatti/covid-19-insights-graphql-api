@@ -13,7 +13,7 @@ model cities {
   nome     String
 }
 
-model covid_2022 {
+model patients {
   id                     String   @id @default(auto()) @map("_id") @db.ObjectId
   bairro                 String
   cod_ibge               String
@@ -23,10 +23,10 @@ model covid_2022 {
   data_confirmacao       String
   data_evolucao          String?
   data_evolucao_estimada String?
-  data_inclusao          String
+  data_inclusao          DateTime @db.Date
   data_inclusao_obito    String?
   data_sintomas          String
-  dispneia               Boolean
+  dispneia               Boolean?
   evolucao               String
   faixa_etaria           String
   febre                  Boolean
@@ -43,4 +43,11 @@ model covid_2022 {
   srag                   Boolean
   tosse                  Boolean
   uti                    Boolean
+
+  @@index([cod_ibge(sort: Desc)], map: "cod_ibge_-1")
+  @@index([data_inclusao(sort: Desc)], map: "data_inclusao_-1")
+  @@index([data_inclusao], map: "data_inclusao_1")
+  @@index([data_inclusao, data_inclusao_obito], map: "data_inclusao_1_data_inclusao_obito_1")
+  @@index([data_inclusao, data_inclusao_obito, cod_ibge(sort: Desc)], map: "data_inclusao_1_data_inclusao_obito_1_cod_ibge_-1")
+  @@index([data_inclusao(sort: Desc), data_inclusao_obito, cod_ibge(sort: Desc)], map: "data_inclusao_-1_data_inclusao_obito_1_cod_ibge_-1")
 }

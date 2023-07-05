@@ -24,6 +24,5 @@ jobs:
             cd Covid-19-insights/covid-19-insights-graphql-api
             git fetch
             git reset --hard origin/main
-            docker compose down
-            docker volume rm covid-19-insights-graphql-api_nodemodules
-            docker compose up --build -d
+            docker compose down -v
+            docker compose up --build --force-recreate -d

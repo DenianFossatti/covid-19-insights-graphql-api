@@ -29,14 +29,11 @@ export const countPatientsGroupedByMonth: GraphQLFieldConfig<any, CustomGraphQLC
     ),
   ),
   resolve: async (_root, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) => {
-    const query = await ctx.prisma.covid_2022.aggregateRaw({
+    const query = await ctx.prisma.patients.aggregateRaw({
       pipeline: [
-        { $match: buildPrismaRangeWhere(args, true)?.where },
-        {
-          $addFields: {
-            data_inclusao: { $toDate: '$data_inclusao' },
-          },
-        },
+        ...(args.filters?.cityCode || (args.filters?.startDate && args.filters.endDate)
+          ? [{ $match: buildPrismaRangeWhere(args, true)?.where }]
+          : []),
         {
           $group: {
             _id: {

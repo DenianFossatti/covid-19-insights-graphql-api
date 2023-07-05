@@ -12,7 +12,7 @@ export const countPatients: GraphQLFieldConfig<any, CustomGraphQLContext, Custom
     },
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
-    await ctx.prisma.covid_2022.count({
+    await ctx.prisma.patients.count({
       ...buildPrismaRangeWhere(args),
     }),
 };
@@ -41,7 +41,7 @@ export const countPatientsByAge: GraphQLFieldConfig<any, CustomGraphQLContext, C
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
     (
-      await ctx.prisma.covid_2022.groupBy({
+      await ctx.prisma.patients.groupBy({
         by: ['faixa_etaria'],
         _count: {
           faixa_etaria: true,
@@ -78,7 +78,7 @@ export const countPatientsByRecoveryStatus: GraphQLFieldConfig<any, CustomGraphQ
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
     (
-      await ctx.prisma.covid_2022.groupBy({
+      await ctx.prisma.patients.groupBy({
         by: ['evolucao'],
         _count: {
           evolucao: true,
@@ -115,7 +115,7 @@ export const countPatientsByDiagnosisCriteria: GraphQLFieldConfig<any, CustomGra
   },
   resolve: async (_obj, args: CustomGraphQLArgs, ctx: CustomGraphQLContext) =>
     (
-      await ctx.prisma.covid_2022.groupBy({
+      await ctx.prisma.patients.groupBy({
         by: ['criterio'],
         _count: {
           criterio: true,

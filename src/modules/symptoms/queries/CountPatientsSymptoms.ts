@@ -18,27 +18,27 @@ export const countPatientsSymptoms: GraphQLFieldConfig<any, CustomGraphQLContext
         febre: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: async (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) =>
-            ctx.prisma.covid_2022.count({ where: { febre: true, ...buildPrismaRangeWhere(root.args)?.where } }),
+            ctx.prisma.patients.count({ where: { febre: true, ...buildPrismaRangeWhere(root.args)?.where } }),
         },
         garganta: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) =>
-            ctx.prisma.covid_2022.count({ where: { garganta: true, ...buildPrismaRangeWhere(root.args)?.where } }),
+            ctx.prisma.patients.count({ where: { garganta: true, ...buildPrismaRangeWhere(root.args)?.where } }),
         },
         tosse: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) =>
-            ctx.prisma.covid_2022.count({ where: { tosse: true, ...buildPrismaRangeWhere(root.args)?.where } }),
+            ctx.prisma.patients.count({ where: { tosse: true, ...buildPrismaRangeWhere(root.args)?.where } }),
         },
         dispneia: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) =>
-            ctx.prisma.covid_2022.count({ where: { dispneia: true, ...buildPrismaRangeWhere(root.args)?.where } }),
+            ctx.prisma.patients.count({ where: { dispneia: true, ...buildPrismaRangeWhere(root.args)?.where } }),
         },
         outros: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) =>
-            ctx.prisma.covid_2022.count({
+            ctx.prisma.patients.count({
               where: { outros_sintomas: true, ...buildPrismaRangeWhere(root.args)?.where },
             }),
         },

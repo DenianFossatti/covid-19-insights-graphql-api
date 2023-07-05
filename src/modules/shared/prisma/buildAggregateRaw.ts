@@ -6,7 +6,7 @@ import { buildPrismaRangeWhere } from '../../shared/filters/DateRangeFilter';
 
 export type BuildAggregateRawArgs = {
   args: CustomGraphQLArgs;
-  groupBy?: Prisma.Covid_2022ScalarFieldEnum;
+  groupBy?: Prisma.PatientsScalarFieldEnum;
   aggregationType: 'avg' | 'countByMonth';
   match?: Record<string, any>;
 };
@@ -16,7 +16,7 @@ export const buildAggregateRaw = ({
   aggregationType,
   groupBy,
   match,
-}: BuildAggregateRawArgs): Prisma.covid_2022AggregateRawArgs<DefaultArgs> => {
+}: BuildAggregateRawArgs): Prisma.patientsAggregateRawArgs<DefaultArgs> => {
   if ((aggregationType === 'avg' || aggregationType === 'countByMonth') && !groupBy)
     throw new Error('groupBy is required for aggregationType avg');
 
@@ -24,12 +24,6 @@ export const buildAggregateRaw = ({
     ...buildPrismaRangeWhere(args, true)?.where,
     ...match,
   };
-  const _addFields =
-    aggregationType === 'avg'
-      ? undefined
-      : {
-          data_inclusao: { $toDate: '$data_inclusao' },
-        };
 
   const _group =
     aggregationType === 'avg'
@@ -54,10 +48,9 @@ export const buildAggregateRaw = ({
 
   const _sort = aggregationType === 'avg' ? undefined : { year: 1, month: 1 };
 
-  return {
+  const result = {
     pipeline: [
       ...(_match ? [{ $match: _match }] : []),
-      ...(_addFields ? [{ $addFields: _addFields }] : []),
       {
         $group: _group,
       },
@@ -67,4 +60,6 @@ export const buildAggregateRaw = ({
       ...(_sort ? [{ $sort: _sort }] : []),
     ],
   };
+
+  return result;
 };

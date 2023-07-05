@@ -13,7 +13,7 @@ export const averageInfectedPatientAge: GraphQLFieldConfig<any, CustomGraphQLCon
         avg: {
           type: new GraphQLNonNull(GraphQLInt),
           resolve: async (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) => {
-            const query = await ctx.prisma.covid_2022.aggregateRaw(
+            const query = await ctx.prisma.patients.aggregateRaw(
               buildAggregateRaw({
                 args: root.args,
                 aggregationType: 'avg',
@@ -50,7 +50,7 @@ export const averageInfectedPatientAge: GraphQLFieldConfig<any, CustomGraphQLCon
             ),
           ),
           resolve: async (root: { args: CustomGraphQLArgs }, _args, ctx: CustomGraphQLContext) => {
-            const query = await ctx.prisma.covid_2022.aggregateRaw(
+            const query = await ctx.prisma.patients.aggregateRaw(
               buildAggregateRaw({
                 args: root.args,
                 aggregationType: 'countByMonth',
